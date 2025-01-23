@@ -6,7 +6,7 @@ from django.db import models
 
 class Post(models.Model):
     # model for Post db
-    image = models.ImageField(null=True , blank=True)
+    #image = models.ImageField(null=True , blank=True)
     title = models.CharField(max_length=250)
     content = models.TextField()
     status = models.BooleanField(default=True)
