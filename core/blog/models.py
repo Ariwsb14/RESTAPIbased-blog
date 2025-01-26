@@ -1,18 +1,21 @@
 from django.db import models
+from django.contrib.auth import get_user_model
 # Create your models here.
 
+#getting the user model
+User = get_user_model()
 
 # defining calsses for the post of blogs
 
 class Post(models.Model):
     # model for Post db
-    #image = models.ImageField(null=True , blank=True)
+    image = models.ImageField(null=True , blank=True,upload_to='blog_images/')
     title = models.CharField(max_length=250)
     content = models.TextField()
     status = models.BooleanField(default=True)
     created_date = models.DateTimeField(auto_now_add=True)
     published_date = models.DateTimeField(auto_now=True)
-    #author = models.ForeignKey('accounts.User', on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
     category = models.ForeignKey('Category', on_delete=models.SET_NULL,null=True)
     updated_date = models.DateTimeField(auto_now=True)
     def __str__(self):
