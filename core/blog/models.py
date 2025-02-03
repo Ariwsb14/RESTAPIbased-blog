@@ -1,11 +1,12 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.urls import reverse
 # Create your models here.
 
 #getting the user model
 User = get_user_model()
 
-# defining calsses for the post of blogs
+# defining classes for the post of blogs
 
 class Post(models.Model):
     # model for Post db
@@ -20,6 +21,8 @@ class Post(models.Model):
     updated_date = models.DateTimeField(auto_now=True)
     def __str__(self):
         return self.title
+    def get_absolute_api_url(self):
+        return reverse("blog:api-v1:post-detail",kwargs={"pk":self.pk})
     
 
 # category class for blog posts

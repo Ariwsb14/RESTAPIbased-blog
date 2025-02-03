@@ -3,4 +3,4 @@ python-decouple
 pillow
 djangorestframework
 markdown       
-django-filter  
+django-filter   
