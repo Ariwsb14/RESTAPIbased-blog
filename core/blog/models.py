@@ -4,7 +4,7 @@ from django.urls import reverse
 # Create your models here.
 
 #getting the user model
-User = get_user_model()
+
 
 # defining classes for the post of blogs
 
@@ -16,7 +16,7 @@ class Post(models.Model):
     status = models.BooleanField(default=True)
     created_date = models.DateTimeField(auto_now_add=True)
     published_date = models.DateTimeField(auto_now=True)
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey('accounts.Profile', on_delete=models.CASCADE)
     category = models.ForeignKey('Category', on_delete=models.SET_NULL,null=True)
     updated_date = models.DateTimeField(auto_now=True)
     def __str__(self):
