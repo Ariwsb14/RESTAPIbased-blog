@@ -10,7 +10,7 @@ class CategorySerializer(serializers.ModelSerializer):
         fields =['id','name']
 
 
-# Post serializer for single and list post
+# Post serializer for single and list post  
 class PostSerializer(serializers.ModelSerializer):
     absolute_url = serializers.SerializerMethodField()
     class Meta:
