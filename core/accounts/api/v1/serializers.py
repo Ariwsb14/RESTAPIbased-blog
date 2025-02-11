@@ -1,10 +1,15 @@
 from rest_framework import serializers
-from accounts.models import User
+from accounts.models import User , Profile
 from django.contrib.auth.password_validation import validate_password
 from django.core import exceptions
 from django.contrib.auth import authenticate
 from django.utils.translation import gettext_lazy as _
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
+
+'''
+registration serializer for accounts/api/v1/views.CustomTokenObtainPairView
+'''
 class RegistrationsSerializer(serializers.ModelSerializer):
     password1 = serializers.CharField(max_length = 255,write_only=True)
     class Meta:
@@ -24,6 +29,9 @@ class RegistrationsSerializer(serializers.ModelSerializer):
         validated_data.pop('password1',None)
         return User.objects.create_user(**validated_data)
     
+'''
+serializer for login and generating Token (token authorization)
+'''
 class CustomAuthTokenSerializer(serializers.Serializer):
     email = serializers.CharField(
         label=_("email"),
@@ -60,3 +68,34 @@ class CustomAuthTokenSerializer(serializers.Serializer):
 
         attrs['user'] = user
         return attrs
+
+'''
+serializer of generating and loging in with Jason Web Token
+'''
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    
+    def validate(self,attrs):
+        validated_data = super().validate(attrs)
+        validated_data['email'] = self.user.email
+        validated_data['id'] = self.user.id
+        return validated_data
+    
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(required = True)
+    new_password = serializers.CharField(required = True)
+    new_password1 = serializers.CharField(required = True)
+    
+    def validate(self, attrs):
+        if attrs.get('new_password') != attrs.get('new_password1'):
+            raise serializers.ValidationError({'detail':'password must match'})
+        try:
+            validate_password(attrs.get('new_password'))
+        except exceptions.ValidationError as e :
+            raise serializers.ValidationError({'new_password':list(e.messages)})
+
+        return super().validate(attrs)
+class ProfileAPISerializer(serializers.ModelSerializer):
+    email = serializers.CharField(source = 'user.email' , read_only=True)
+    class Meta:
+        model = Profile
+        fields = ['id','email','first_name','last_name','image','description']
